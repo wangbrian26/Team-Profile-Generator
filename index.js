@@ -96,32 +96,34 @@ function createIntern(newEmployee) {
 }
 
 function buildTeam() {
-  createManager();
-  prompt([
-    {
-      type: "list",
-      message:
-        "Would you like to create a new engineer or intern? Or press done if you are done adding employees.",
-      choices: ["intern", "engineer", "done"],
-      name: "employeeType",
-    },
-  ]).then((answers) => {
-    switch (answers.employeeType) {
-      case "intern":
-        const employee = createEmployee();
-        createIntern(employee);
-        break;
-      case "engineer":
-        const employee = createEmployee();
-        createEngineer(employee);
-        break;
-      case "done":
-        console.log(
-          "Thanks for creating your team. Your HTML website is now being created."
-        );
-        fs.writeFile(
-          `/new_htmls/${managerName}.html`,
-          `<!DOCTYPE html>
+  createManager()
+    .then(
+      prompt([
+        {
+          type: "list",
+          message:
+            "Would you like to create a new engineer or intern? Or press done if you are done adding employees.",
+          choices: ["intern", "engineer", "done"],
+          name: "employeeType",
+        },
+      ])
+    )
+    .then((answers) => {
+      switch (answers.employeeType) {
+        case "intern":
+          createIntern(createEmployee());
+          break;
+        case "engineer":
+          createEngineer(createEmployee());
+          break;
+        case "done":
+          console.log(
+            "Thanks for creating your team. Your HTML website is now being created."
+          );
+          break;
+          fs.writeFile(
+            `/new_htmls/${managerName}.html`,
+            `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -137,9 +139,10 @@ function buildTeam() {
 </body>
 <script src="./script.js"></script>
 </html>`
-        );
-    }
-  });
+          );
+      }
+    });
 }
 
+// buildTeam();
 module.exports = teamMembers;

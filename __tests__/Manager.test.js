@@ -37,6 +37,11 @@ describe("Manager", () => {
     const newManager = new Manager("Aiden", 1, "aiden@gmail.com", 2);
     expect(newManager.getEmail()).toBe(newManager.email);
   });
+  it("should get office number", () => {
+    const newManager = new Manager("Aiden", 1, "aiden@gmail.com", 2);
+    const office = 2;
+    expect(newManager.getOffice()).toBe(office);
+  });
   it("should have role", () => {
     const role = "Manager";
     const newManager = new Manager("Aiden");

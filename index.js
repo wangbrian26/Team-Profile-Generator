@@ -1,14 +1,15 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const { Employee, Manager, Intern, Engineer } = require("./lib");
+const { Manager, Intern, Engineer } = require("./lib");
+const teamBuilder = require("./src/script");
 
 const { prompt } = inquirer;
 
 let teamMembers = [];
-let managerName = "";
+let teamManagerName = "";
 
 function createManager() {
-  managerName = "";
+  teamManagerName = "";
   teamMembers = [];
   prompt([
     {
@@ -38,8 +39,9 @@ function createManager() {
       answers.managerEmail,
       answers.managerOffice
     );
-    managerName = answers.managerName;
+    teamManagerName = answers.managerName;
     teamMembers.push(newManager);
+    menu();
   });
 }
 
@@ -60,89 +62,109 @@ function createEmployee() {
       message: "What is the employee's email address?",
       name: "employeeEmail",
     },
-  ]).then((answers) => {
-    const newEmployee = new Employee(
-      answers.employeeName,
-      answers.employeeId,
-      answers.employeeEmail
-    );
-  });
+  ]);
 }
 
-function createEngineer(newEmployee) {
+function createEngineer() {
   prompt([
+    {
+      type: "input",
+      message: "What is the engineer's name?",
+      name: "engineerName",
+    },
+    {
+      type: "input",
+      message: "What is the engineer's ID number?",
+      name: "engineerId",
+    },
+    {
+      type: "input",
+      message: "What is the engineer's email address?",
+      name: "engineerEmail",
+    },
     {
       type: "input",
       message: "What is the engineer's GitHub username?",
-      name: "employeeGithub",
+      name: "engineerGithub",
     },
   ]).then((answers) => {
-    const newEngineer = new Engineer(newEmployee, answers.employeeGithub);
+    const newEngineer = new Engineer(
+      answers.engineerName,
+      answers.engineerId,
+      answers.engineerEmail,
+      answers.engineerGithub
+    );
     teamMembers.push(newEngineer);
+    menu();
   });
 }
 
-function createIntern(newEmployee) {
+function createIntern() {
   prompt([
     {
       type: "input",
+      message: "What is the employee's name?",
+      name: "internName",
+    },
+    {
+      type: "input",
+      message: "What is the employee's ID number?",
+      name: "internId",
+    },
+    {
+      type: "input",
+      message: "What is the employee's email address?",
+      name: "internEmail",
+    },
+    {
+      type: "input",
       message: "Where did the intern attend school?",
-      name: "employeeSchool",
+      name: "internSchool",
     },
   ]).then((answers) => {
-    const newIntern = new Intern(newEmployee, answers.employeeSchool);
-    teamMembers.push(newEngineer);
+    const newIntern = new Intern(
+      answers.internName,
+      answers.internId,
+      answers.internEmail,
+      answers.internSchool
+    );
+    teamMembers.push(newIntern);
+    menu();
   });
 }
 
 function buildTeam() {
-  createManager()
-    .then(
-      prompt([
-        {
-          type: "list",
-          message:
-            "Would you like to create a new engineer or intern? Or press done if you are done adding employees.",
-          choices: ["intern", "engineer", "done"],
-          name: "employeeType",
-        },
-      ])
-    )
-    .then((answers) => {
-      switch (answers.employeeType) {
-        case "intern":
-          createIntern(createEmployee());
-          break;
-        case "engineer":
-          createEngineer(createEmployee());
-          break;
-        case "done":
-          console.log(
-            "Thanks for creating your team. Your HTML website is now being created."
-          );
-          break;
-          fs.writeFile(
-            `/new_htmls/${managerName}.html`,
-            `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./style.css">
-  <title>${managerName}'s Team</title>
-</head>
-<body>
-  <h1>${managerName}'s Team</h1>
-  <div id="manager"></div>
-  <div id="team"></div>
-</body>
-<script src="./script.js"></script>
-</html>`
-          );
-      }
-    });
+  createManager();
+}
+function createHtml() {
+  fs.writeFileSync(`./dist/${teamManagerName}.html`, teamBuilder(teamMembers));
 }
 
-// buildTeam();
-module.exports = teamMembers;
+function menu() {
+  prompt([
+    {
+      type: "list",
+      message:
+        "Would you like to create a new engineer or intern? Or press done if you are done adding employees.",
+      choices: ["intern", "engineer", "done"],
+      name: "employeeType",
+    },
+  ]).then((answers) => {
+    switch (answers.employeeType) {
+      case "intern":
+        createIntern();
+        break;
+      case "engineer":
+        createEngineer();
+        break;
+      case "done":
+        createHtml();
+        console.log(
+          "Thanks for creating your team. Your HTML website is now being created."
+        );
+        break;
+    }
+  });
+}
+
+buildTeam();

@@ -137,7 +137,10 @@ function buildTeam() {
   createManager();
 }
 function createHtml() {
-  fs.writeFileSync(`./dist/${teamManagerName}.html`, teamBuilder(teamMembers));
+  fs.writeFileSync(
+    `./dist/${teamManagerName.split(" ").join("")}.html`,
+    teamBuilder(teamMembers)
+  );
 }
 
 function menu() {

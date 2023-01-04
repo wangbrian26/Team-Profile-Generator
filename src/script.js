@@ -6,7 +6,7 @@ function teamBuilder(team) {
   <div class="card col-3">
     <h2>Manager: ${manager.getName()}</h2>
     <h3>Office Number: ${manager.getOffice()}</h3>
-    <h3>Email: ${manager.getEmail()}</h3>
+    <h3>Email: <a href="mailto: ${manager.getEmail()}">${manager.getEmail()}</a></h3>
   </div>
       `;
     }
@@ -14,8 +14,8 @@ function teamBuilder(team) {
       return `
   <div class="card col-3">
     <h2>Engineer: ${engineer.getName()}</h2>
-    <h3>GitHub: ${engineer.getGithub()}</h3>
-    <h3>Email: ${engineer.getEmail()}</h3>
+    <h3>GitHub: <a href="https://www.github.com/${engineer.getGithub()}">${engineer.getName()}'s Github Profile</a></h3>
+    <h3>Email: <a href="mailto: ${engineer.getEmail()}">${engineer.getEmail()}</a></h3>
   </div>
       `;
     }
@@ -24,7 +24,7 @@ function teamBuilder(team) {
   <div class="card col-3">
     <h2>Intern: ${intern.getName()}</h2>
     <h3>School: ${intern.getSchool()}</h3>
-    <h3>Email: ${intern.getEmail()}</h3>
+    <h3>Email: <a href="mailto: ${intern.getEmail()}">${intern.getEmail()}</a></h3>
   </div>
       `;
     }
@@ -69,7 +69,7 @@ function teamBuilder(team) {
     .filter((object) => object.getRole() === "Manager")
     .map((manager) => manager.getName())}'s Team Profile</h1>
 </header>  
-<div class="container-fluid">
+<div class="container-fluid" id="body">
 <div class="row justify-content-center">
 ${generateHtml(team)}
 </div>
